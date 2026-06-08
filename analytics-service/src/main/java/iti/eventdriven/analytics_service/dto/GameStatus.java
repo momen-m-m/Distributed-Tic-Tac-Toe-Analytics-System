@@ -1,4 +1,4 @@
-package iti.eventdriven.game_service.dto;
+package iti.eventdriven.analytics_service.dto;
 
 public enum GameStatus {
     Active,

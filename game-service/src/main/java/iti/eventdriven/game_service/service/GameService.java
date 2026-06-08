@@ -1,7 +1,7 @@
 package iti.eventdriven.game_service.service;
 
-import iti.eventdriven.game_service.DTO.GameDifficulty;
-import iti.eventdriven.game_service.DTO.GameState;
+import iti.eventdriven.game_service.dto.GameDifficulty;
+import iti.eventdriven.game_service.dto.GameState;
 
 public interface GameService {
 

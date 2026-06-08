@@ -1,4 +1,4 @@
-package iti.eventdriven.game_service.dto;
+package iti.eventdriven.analytics_service.dto;
 
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;

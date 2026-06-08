@@ -15,6 +15,7 @@ public class RabbitMQConfig {
     public static final String ROUTING_KEY_MOVE     = "game.move";
     public static final String ROUTING_KEY_FINISHED = "game.finished";
 
+
     @Bean public DirectExchange gameExchange() {
         return new DirectExchange(EXCHANGE_NAME);
     }

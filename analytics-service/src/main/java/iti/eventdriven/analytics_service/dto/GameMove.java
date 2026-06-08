@@ -1,9 +1,6 @@
-package iti.eventdriven.game_service.dto;
+package iti.eventdriven.analytics_service.dto;
 
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
 @NoArgsConstructor
 @AllArgsConstructor

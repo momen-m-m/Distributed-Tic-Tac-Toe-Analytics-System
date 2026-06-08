@@ -1,4 +1,4 @@
-package iti.eventdriven.game_service.DTO;
+package iti.eventdriven.game_service.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -10,7 +10,7 @@ import lombok.Setter;
 @Setter
 @Getter
 public class GameRequest {
-    String gameId;
-    char humanSymbol;
-    GameDifficulty difficultyLevel;
+    private String gameId;
+    private char humanSymbol;
+    private GameDifficulty difficultyLevel;
 }

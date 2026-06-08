@@ -1,6 +1,6 @@
 package iti.eventdriven.game_service.service.Impl;
 
-import iti.eventdriven.game_service.DTO.*;
+import iti.eventdriven.game_service.dto.*;
 import iti.eventdriven.game_service.game.BoardChecker;
 import iti.eventdriven.game_service.game.MinMaxEngine;
 import iti.eventdriven.game_service.service.GameService;

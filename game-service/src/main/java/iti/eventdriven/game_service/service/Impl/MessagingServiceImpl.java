@@ -1,9 +1,8 @@
 package iti.eventdriven.game_service.service.Impl;
 
-import iti.eventdriven.game_service.DTO.GameFinished;
-import iti.eventdriven.game_service.DTO.GameMove;
-import iti.eventdriven.game_service.DTO.GameRequest;
-import iti.eventdriven.game_service.DTO.GameState;
+import iti.eventdriven.game_service.dto.GameFinished;
+import iti.eventdriven.game_service.dto.GameMove;
+import iti.eventdriven.game_service.dto.GameRequest;
 import iti.eventdriven.game_service.configuration.RabbitMQConfig;
 import iti.eventdriven.game_service.service.MessagingService;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;

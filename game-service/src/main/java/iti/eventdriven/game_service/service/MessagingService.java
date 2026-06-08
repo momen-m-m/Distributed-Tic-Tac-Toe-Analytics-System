@@ -1,9 +1,8 @@
 package iti.eventdriven.game_service.service;
 
-import iti.eventdriven.game_service.DTO.GameFinished;
-import iti.eventdriven.game_service.DTO.GameMove;
-import iti.eventdriven.game_service.DTO.GameRequest;
-import iti.eventdriven.game_service.DTO.GameState;
+import iti.eventdriven.game_service.dto.GameFinished;
+import iti.eventdriven.game_service.dto.GameMove;
+import iti.eventdriven.game_service.dto.GameRequest;
 
 public interface MessagingService {
     void sendMove(GameMove move);

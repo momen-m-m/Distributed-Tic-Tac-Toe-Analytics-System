@@ -1,4 +1,4 @@
-package iti.eventdriven.game_service.dto;
+package iti.eventdriven.analytics_service.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -9,12 +9,8 @@ import lombok.Setter;
 @AllArgsConstructor
 @Setter
 @Getter
-public class GameState {
+public class GameRequest {
     private String gameId;
-    private char[][] board;
-    private char currentTurn;
-    private GameStatus status;
     private char humanSymbol;
     private GameDifficulty difficultyLevel;
-    private int moveNumber;
 }

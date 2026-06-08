@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title>Tic Tac Toe Analytics</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@2.44.0/tabler-icons.min.css"/>
+    <style>
+        *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+        body { font-family: system-ui, sans-serif; background: #f5f5f4; color: #1c1c1a; min-height: 100vh; padding: 2rem; }
+        .dash { max-width: 900px; margin: 0 auto; }
+        h1 { font-size: 20px; font-weight: 500; margin-bottom: 1.5rem; display: flex; align-items: center; gap: 10px; }
+        .section-label { font-size: 12px; color: #888780; letter-spacing: 0.06em; text-transform: uppercase; margin-bottom: 10px; }
+        .metric-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(130px, 1fr)); gap: 10px; margin-bottom: 1.5rem; }
+        .metric { background: #fff; border-radius: 8px; padding: 14px 16px; border: 0.5px solid #e0ded8; }
+        .metric-label { font-size: 12px; color: #888780; margin-bottom: 6px; }
+        .metric-value { font-size: 22px; font-weight: 500; }
+        .metric-sub { font-size: 12px; color: #b4b2a9; margin-top: 2px; }
+        .controls { display: flex; gap: 8px; margin-bottom: 1.5rem; flex-wrap: wrap; align-items: center; }
+        .filter-btn { padding: 6px 14px; border-radius: 8px; border: 0.5px solid #d3d1c7; background: transparent; color: #888780; font-size: 13px; cursor: pointer; transition: all 0.15s; }
+        .filter-btn.active { background: #fff; color: #1c1c1a; border-color: #888780; font-weight: 500; }
+        .filter-btn:hover:not(.active) { background: #f1efe8; }
+        .bar-row { display: flex; align-items: center; gap: 10px; margin-bottom: 10px; }
+        .bar-label { font-size: 13px; color: #888780; width: 80px; flex-shrink: 0; }
+        .bar-track { flex: 1; height: 8px; background: #f1efe8; border-radius: 99px; overflow: hidden; }
+        .bar-fill { height: 100%; border-radius: 99px; transition: width 0.5s ease; }
+        .bar-pct { font-size: 13px; font-weight: 500; width: 42px; text-align: right; }
+        .games-table { width: 100%; border-collapse: collapse; font-size: 13px; }
+        .games-table th { text-align: left; padding: 8px 10px; font-size: 11px; font-weight: 500; color: #888780; border-bottom: 0.5px solid #e0ded8; letter-spacing: 0.05em; text-transform: uppercase; }
+        .games-table td { padding: 10px; border-bottom: 0.5px solid #f1efe8; }
+        .games-table tr:last-child td { border-bottom: none; }
+        .badge { display: inline-block; padding: 2px 8px; border-radius: 99px; font-size: 11px; font-weight: 500; }
+        .badge-ai { background: #E6F1FB; color: #0C447C; }
+        .badge-human { background: #EAF3DE; color: #27500A; }
+        .badge-draw { background: #F1EFE8; color: #444441; }
+        .badge-easy { background: #EAF3DE; color: #3B6D11; }
+        .badge-medium { background: #FAEEDA; color: #854F0B; }
+        .badge-hard { background: #FCEBEB; color: #A32D2D; }
+        .pagination { display: flex; align-items: center; justify-content: space-between; margin-top: 12px; }
+        .page-info { font-size: 13px; color: #888780; }
+        .page-btns { display: flex; gap: 6px; }
+        .page-btn { padding: 5px 12px; border: 0.5px solid #d3d1c7; border-radius: 8px; background: #fff; color: #1c1c1a; font-size: 13px; cursor: pointer; }
+        .page-btn:disabled { opacity: 0.35; cursor: default; }
+        .page-btn:hover:not(:disabled) { background: #f1efe8; }
+        .card { background: #fff; border: 0.5px solid #e0ded8; border-radius: 12px; padding: 1rem 1.25rem; margin-bottom: 1rem; }
+        .card-title { font-size: 14px; font-weight: 500; margin-bottom: 14px; display: flex; align-items: center; gap: 8px; color: #1c1c1a; }
+        .loading-row td { color: #b4b2a9; font-style: italic; }
+        .error-msg { color: #A32D2D; }
+    </style>
+</head>
+<body>
+<div class="dash">
+    <h1><i class="ti ti-chart-bar"></i> Tic Tac Toe Analytics</h1>
+
+    <div class="controls">
+        <span class="section-label" style="margin:0; margin-right:4px;">Filter</span>
+        <button class="filter-btn active" data-difficulty="">All</button>
+        <button class="filter-btn" data-difficulty="Easy">Easy</button>
+        <button class="filter-btn" data-difficulty="Medium">Medium</button>
+        <button class="filter-btn" data-difficulty="Hard">Hard</button>
+    </div>
+
+    <div class="metric-grid">
+        <div class="metric"><div class="metric-label">Total games</div><div class="metric-value" id="m-total">—</div></div>
+        <div class="metric"><div class="metric-label">AI wins</div><div class="metric-value" id="m-ai">—</div><div class="metric-sub" id="m-ai-rate"></div></div>
+        <div class="metric"><div class="metric-label">Human wins</div><div class="metric-value" id="m-human">—</div><div class="metric-sub" id="m-human-rate"></div></div>
+        <div class="metric"><div class="metric-label">Draws</div><div class="metric-value" id="m-draw">—</div><div class="metric-sub" id="m-draw-rate"></div></div>
+        <div class="metric"><div class="metric-label">Avg moves</div><div class="metric-value" id="m-avg">—</div></div>
+    </div>
+
+    <div class="card">
+        <div class="card-title"><i class="ti ti-chart-bar"></i> Win rate breakdown</div>
+        <div class="bar-row">
+            <span class="bar-label">AI</span>
+            <div class="bar-track"><div class="bar-fill" id="bar-ai" style="width:0%;background:#378ADD;"></div></div>
+            <span class="bar-pct" id="pct-ai">—</span>
+        </div>
+        <div class="bar-row">
+            <span class="bar-label">Human</span>
+            <div class="bar-track"><div class="bar-fill" id="bar-human" style="width:0%;background:#639922;"></div></div>
+            <span class="bar-pct" id="pct-human">—</span>
+        </div>
+        <div class="bar-row">
+            <span class="bar-label">Draw</span>
+            <div class="bar-track"><div class="bar-fill" id="bar-draw" style="width:0%;background:#888780;"></div></div>
+            <span class="bar-pct" id="pct-draw">—</span>
+        </div>
+    </div>
+
+    <div class="card">
+        <div class="card-title"><i class="ti ti-list"></i> Game history</div>
+        <table class="games-table">
+            <thead>
+            <tr>
+                <th>Game ID</th><th>Difficulty</th><th>Result</th><th>Moves</th><th>Ended</th><th></th>
+            </tr>
+            </thead>
+            <tbody id="games-body">
+            <tr class="loading-row"><td colspan="6">Loading games...</td></tr>
+            </tbody>
+        </table>
+        <div class="pagination">
+            <span class="page-info" id="page-info"></span>
+            <div class="page-btns">
+                <button class="page-btn" id="btn-prev" disabled><i class="ti ti-arrow-left"></i></button>
+                <button class="page-btn" id="btn-next" disabled><i class="ti ti-arrow-right"></i></button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    const BASE = 'http://localhost:8081/api/analytics';
+    let currentPage = 0;
+    let currentDifficulty = '';
+    const PAGE_SIZE = 8;
+
+    async function fetchSummary() {
+        const url = currentDifficulty ? `${BASE}/summary/${currentDifficulty}` : `${BASE}/summary`;
+        try {
+            const res = await fetch(url);
+            if (!res.ok) throw new Error();
+            const d = await res.json();
+            document.getElementById('m-total').textContent = d.totalGames;
+            document.getElementById('m-ai').textContent = d.aiWins;
+            document.getElementById('m-ai-rate').textContent = d.aiWinRate.toFixed(1) + '%';
+            document.getElementById('m-human').textContent = d.humanWins;
+            document.getElementById('m-human-rate').textContent = d.humanWinRate.toFixed(1) + '%';
+            document.getElementById('m-draw').textContent = d.draws;
+            document.getElementById('m-draw-rate').textContent = d.drawRate.toFixed(1) + '%';
+            document.getElementById('m-avg').textContent = d.avgMovesPerGame.toFixed(1);
+            document.getElementById('bar-ai').style.width = d.aiWinRate.toFixed(1) + '%';
+            document.getElementById('bar-human').style.width = d.humanWinRate.toFixed(1) + '%';
+            document.getElementById('bar-draw').style.width = d.drawRate.toFixed(1) + '%';
+            document.getElementById('pct-ai').textContent = d.aiWinRate.toFixed(1) + '%';
+            document.getElementById('pct-human').textContent = d.humanWinRate.toFixed(1) + '%';
+            document.getElementById('pct-draw').textContent = d.drawRate.toFixed(1) + '%';
+        } catch {
+            ['m-total','m-ai','m-human','m-draw','m-avg'].forEach(id => document.getElementById(id).textContent = 'N/A');
+        }
+    }
+
+    async function fetchGames() {
+        const tbody = document.getElementById('games-body');
+        tbody.innerHTML = '<tr class="loading-row"><td colspan="6">Loading...</td></tr>';
+        try {
+            const res = await fetch(`${BASE}/games?page=${currentPage}&size=${PAGE_SIZE}`);
+            if (!res.ok) throw new Error();
+            const d = await res.json();
+            if (!d.content || d.content.length === 0) {
+                tbody.innerHTML = '<tr class="loading-row"><td colspan="6">No games found.</td></tr>';
+            } else {
+                tbody.innerHTML = d.content.map(g => `
+          <tr>
+            <td style="font-family:monospace;font-size:12px;color:#888780;">${g.gameId ? g.gameId.slice(0,8)+'…' : '—'}</td>
+            <td>${diffBadge(g.difficultyLevel)}</td>
+            <td>${resultBadge(g.gameStatus)}</td>
+            <td>${g.numberOfMoves ?? '—'}</td>
+            <td style="color:#888780;">${g.endTime ? formatDate(g.endTime) : '—'}</td>
+            <td><button class="page-btn" style="padding:3px 8px;font-size:12px;" onclick="viewGame('${g.gameId}')"><i class="ti ti-eye"></i></button></td>
+          </tr>`).join('');
+            }
+            document.getElementById('page-info').textContent = `Page ${d.currentPage+1} of ${d.totalPages} · ${d.totalElements} games`;
+            document.getElementById('btn-prev').disabled = d.isFirst;
+            document.getElementById('btn-next').disabled = d.isLast;
+        } catch {
+            tbody.innerHTML = '<tr class="loading-row"><td colspan="6" class="error-msg">Could not load games. Is the server running on port 8081?</td></tr>';
+        }
+    }
+
+    function resultBadge(status) {
+        const map = { AIWon:['badge-ai','AI won'], HumanWon:['badge-human','Human won'], Draw:['badge-draw','Draw'], Active:['badge-draw','Active'] };
+        const [cls, label] = map[status] || ['badge-draw', status || '—'];
+        return `<span class="badge ${cls}">${label}</span>`;
+    }
+
+    function diffBadge(d) {
+        const map = { Easy:'badge-easy', Medium:'badge-medium', Hard:'badge-hard' };
+        return d ? `<span class="badge ${map[d]||'badge-draw'}">${d}</span>` : '—';
+    }
+
+    function formatDate(dt) {
+        return new Date(dt).toLocaleDateString(undefined, { month:'short', day:'numeric', hour:'2-digit', minute:'2-digit' });
+    }
+
+    function viewGame(id) {
+        fetch(`${BASE}/game/${id}`)
+            .then(r => r.json())
+            .then(g => alert(JSON.stringify(g, null, 2)))
+            .catch(() => alert('Could not load game: ' + id));
+    }
+
+    document.querySelectorAll('.filter-btn').forEach(btn => {
+        btn.addEventListener('click', () => {
+            document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+            btn.classList.add('active');
+            currentDifficulty = btn.dataset.difficulty;
+            currentPage = 0;
+            fetchSummary();
+        });
+    });
+
+    document.getElementById('btn-prev').addEventListener('click', () => { currentPage--; fetchGames(); });
+    document.getElementById('btn-next').addEventListener('click', () => { currentPage++; fetchGames(); });
+
+    fetchSummary();
+    fetchGames();
+</script>
+</body>
+</html>

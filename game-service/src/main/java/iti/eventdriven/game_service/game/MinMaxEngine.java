@@ -1,6 +1,6 @@
 package iti.eventdriven.game_service.game;
 
-import iti.eventdriven.game_service.DTO.GameDifficulty;
+import iti.eventdriven.game_service.dto.GameDifficulty;
 import org.springframework.stereotype.Component;
 
 @Component

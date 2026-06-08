@@ -1,7 +1,7 @@
 package iti.eventdriven.game_service.controller;
 
-import iti.eventdriven.game_service.DTO.GameDifficulty;
-import iti.eventdriven.game_service.DTO.GameState;
+import iti.eventdriven.game_service.dto.GameDifficulty;
+import iti.eventdriven.game_service.dto.GameState;
 import iti.eventdriven.game_service.service.GameService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
